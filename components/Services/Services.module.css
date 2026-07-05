@@ -1,0 +1,91 @@
+.section {
+  background:
+    radial-gradient(circle at center, rgba(216, 167, 95, 0.12), transparent 35%),
+    #faf6ef;
+  color: #100f0e;
+  padding: 64px 24px 78px;
+}
+
+.container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.kicker {
+  color: #c58a3e;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.container h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 500;
+  margin-bottom: 38px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px;
+}
+
+.card {
+  min-height: 210px;
+  padding: 34px 28px 28px;
+  border: 1px solid rgba(197, 138, 62, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.54);
+  box-shadow: 0 18px 50px rgba(55, 34, 12, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(197, 138, 62, 0.65);
+  box-shadow: 0 24px 70px rgba(55, 34, 12, 0.12);
+}
+
+.icon {
+  margin: 0 auto 16px;
+  color: #c58a3e;
+  font-size: 44px;
+  line-height: 1;
+}
+
+.card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #4d4945;
+  font-size: 15px;
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+
+.card strong {
+  color: #c58a3e;
+  font-size: 19px;
+}
+
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

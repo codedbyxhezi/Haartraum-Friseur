@@ -1,0 +1,83 @@
+.section {
+  background:
+    radial-gradient(circle at center, rgba(216, 167, 95, 0.12), transparent 35%),
+    #faf6ef;
+  color: #100f0e;
+  padding: 90px 24px;
+}
+
+.container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.kicker {
+  color: #c58a3e;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.container h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 4vw, 50px);
+  font-weight: 500;
+  margin-bottom: 36px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+}
+
+.image {
+  min-height: 430px;
+  border-radius: 16px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+    url("/salon-interior.jpg");
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(197, 138, 62, 0.28);
+  box-shadow: 0 30px 80px rgba(55, 34, 12, 0.16);
+}
+
+.large {
+  grid-row: span 2;
+}
+
+.card {
+  min-height: 200px;
+  border: 1px solid rgba(197, 138, 62, 0.28);
+  border-radius: 16px;
+  padding: 34px;
+  background:
+    radial-gradient(circle at top right, rgba(216, 167, 95, 0.14), transparent 40%),
+    rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 50px rgba(55, 34, 12, 0.08);
+}
+
+.card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #c58a3e;
+  font-size: 25px;
+  margin-bottom: 14px;
+}
+
+.card p {
+  color: #4d4945;
+  line-height: 1.7;
+}
+
+@media (max-width: 850px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .large {
+    grid-row: auto;
+  }
+}

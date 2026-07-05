@@ -1,0 +1,123 @@
+.section {
+  background:
+    radial-gradient(circle at top right, rgba(216, 167, 95, 0.14), transparent 35%),
+    linear-gradient(135deg, #050607 0%, #101113 48%, #070809 100%);
+  color: #fffaf2;
+  padding: 90px 24px;
+  border-top: 1px solid rgba(216, 167, 95, 0.22);
+}
+
+.container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 42px;
+}
+
+.kicker {
+  color: #d8a75f;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.header h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 4vw, 50px);
+  font-weight: 500;
+}
+
+.allButton {
+  border: 1px solid rgba(216, 167, 95, 0.45);
+  color: #fffaf2;
+  padding: 14px 22px;
+  border-radius: 9px;
+  font-weight: 800;
+}
+
+.allButton:hover {
+  color: #d8a75f;
+  border-color: #d8a75f;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+
+.card {
+  padding: 34px;
+  border: 1px solid rgba(216, 167, 95, 0.28);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(216, 167, 95, 0.1), transparent 40%),
+    rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  transition: 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(216, 167, 95, 0.5);
+}
+
+.category {
+  display: inline-flex;
+  color: #100b05;
+  background: linear-gradient(135deg, #e9b86d, #c58a3e);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 22px;
+}
+
+.card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+.card p {
+  color: #cfc6bb;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  color: #9f9589;
+  font-size: 14px;
+  border-top: 1px solid rgba(216, 167, 95, 0.16);
+  padding-top: 18px;
+  margin-bottom: 22px;
+}
+
+.link {
+  color: #d8a75f;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

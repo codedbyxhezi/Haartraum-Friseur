@@ -1,0 +1,245 @@
+.header {
+  height: 82px;
+  padding: 0 72px;
+  background: rgba(6, 7, 8, 0.96);
+  border-bottom: 1px solid rgba(216, 167, 95, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(16px);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #d8a75f;
+  letter-spacing: 4px;
+  z-index: 110;
+}
+
+.logoIcon {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.logo strong {
+  display: block;
+  font-size: 22px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+}
+
+.logo small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  text-align: center;
+  letter-spacing: 7px;
+  color: #f4d59d;
+}
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  color: #f5f0e8;
+  font-size: 15px;
+}
+
+.desktopNav a {
+  position: relative;
+  padding: 30px 0;
+}
+
+.desktopNav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 19px;
+  width: 0;
+  height: 2px;
+  background: #d8a75f;
+  transition: width 0.25s ease;
+}
+
+.desktopNav a:hover::after {
+  width: 100%;
+}
+
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.loginButton {
+  color: #f5f0e8;
+  border: 1px solid rgba(216, 167, 95, 0.35);
+  padding: 13px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.loginButton:hover {
+  color: #d8a75f;
+  border-color: #d8a75f;
+}
+
+.bookingButton {
+  background: linear-gradient(135deg, #e9b86d, #c58a3e);
+  color: #100b05;
+  padding: 15px 22px;
+  border-radius: 8px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 12px 30px rgba(216, 167, 95, 0.18);
+}
+
+.bookingButton:hover {
+  transform: translateY(-1px);
+}
+
+.burger {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(216, 167, 95, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  position: relative;
+  z-index: 110;
+}
+
+.burger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #d8a75f;
+  margin: 5px auto;
+  transition: 0.25s ease;
+}
+
+.lineOneActive {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.lineTwoActive {
+  opacity: 0;
+}
+
+.lineThreeActive {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .header {
+    padding: 0 28px;
+  }
+
+  .desktopNav,
+  .desktopActions {
+    display: none;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .mobileMenu {
+    display: flex;
+    position: fixed;
+    top: 82px;
+    left: 0;
+    right: 0;
+    background:
+      radial-gradient(circle at top right, rgba(216, 167, 95, 0.13), transparent 35%),
+      rgba(6, 7, 8, 0.98);
+    border-bottom: 1px solid rgba(216, 167, 95, 0.22);
+    padding: 26px 28px 32px;
+    flex-direction: column;
+    gap: 28px;
+    transform: translateY(-140%);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.28s ease;
+    backdrop-filter: blur(18px);
+  }
+
+  .mobileMenuOpen {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobileNav {
+    display: grid;
+    gap: 18px;
+  }
+
+  .mobileNav a {
+    color: #fffaf2;
+    font-size: 20px;
+    font-family: Georgia, "Times New Roman", serif;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(216, 167, 95, 0.14);
+  }
+
+  .mobileActions {
+    display: grid;
+    gap: 12px;
+  }
+
+  .mobileLoginButton,
+  .mobileBookingButton {
+    height: 52px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+  }
+
+  .mobileLoginButton {
+    color: #fffaf2;
+    border: 1px solid rgba(216, 167, 95, 0.45);
+  }
+
+  .mobileBookingButton {
+    background: linear-gradient(135deg, #e9b86d, #c58a3e);
+    color: #100b05;
+  }
+}
+
+@media (max-width: 520px) {
+  .header {
+    height: 74px;
+    padding: 0 18px;
+  }
+
+  .logoIcon {
+    font-size: 28px;
+  }
+
+  .logo strong {
+    font-size: 18px;
+  }
+
+  .logo small {
+    font-size: 8px;
+    letter-spacing: 5px;
+  }
+
+  .mobileMenu {
+    top: 74px;
+  }
+}

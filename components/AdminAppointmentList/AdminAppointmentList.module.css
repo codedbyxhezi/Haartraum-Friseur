@@ -1,0 +1,5 @@
+.list { display: grid; gap: 14px; margin-top: 24px; }
+.item { background: white; border-radius: 16px; padding: 18px; display: flex; justify-content: space-between; gap: 16px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.item h3 { margin: 6px 0; }
+.item p { color: #6b625a; margin: 0; }
+.item span { background: #f7f0e8; border-radius: 999px; padding: 8px 12px; font-weight: 800; }

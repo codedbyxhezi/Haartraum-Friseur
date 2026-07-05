@@ -1,0 +1,122 @@
+.hero {
+  min-height: 620px;
+  position: relative;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 6, 7, 0.98) 0%,
+      rgba(5, 6, 7, 0.92) 28%,
+      rgba(5, 6, 7, 0.42) 58%,
+      rgba(5, 6, 7, 0.78) 100%
+    ),
+    url("/salon-hero.jpg");
+  background-size: cover;
+  background-position: center right;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 72% 30%, rgba(216, 167, 95, 0.18), transparent 26%),
+    linear-gradient(180deg, transparent, rgba(5, 6, 7, 0.25));
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 70px 0;
+}
+
+.kicker {
+  color: #d8a75f;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.content h1 {
+  max-width: 620px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(54px, 7vw, 92px);
+  line-height: 0.98;
+  font-weight: 500;
+  color: #fffaf2;
+  letter-spacing: -2px;
+}
+
+.content h1 span {
+  color: #d8a75f;
+}
+
+.text {
+  max-width: 510px;
+  margin-top: 28px;
+  color: #e7dfd5;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 34px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 58px;
+  padding: 0 28px;
+  border-radius: 9px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #e9b86d, #c58a3e);
+  color: #120c05;
+  box-shadow: 0 18px 40px rgba(216, 167, 95, 0.22);
+}
+
+.secondaryButton {
+  border: 1px solid #d8a75f;
+  color: #fff6e8;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 760px) {
+  .hero {
+    min-height: auto;
+  }
+
+  .content {
+    padding: 90px 0;
+  }
+
+  .text {
+    font-size: 17px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

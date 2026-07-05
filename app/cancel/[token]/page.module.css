@@ -1,0 +1,5 @@
+.main { min-height: 100vh; display: grid; place-items: center; padding: 48px; }
+.card { width: min(520px, 100%); background: #fffaf4; border: 1px solid #eadfd2; border-radius: 28px; padding: 32px; }
+.card h1 { margin-top: 0; }
+.card code { display: block; margin: 16px 0; padding: 12px; background: white; border-radius: 12px; overflow-wrap: anywhere; }
+.card button { padding: 15px 20px; border: 0; border-radius: 999px; background: #1f1a17; color: white; font-weight: 800; cursor: pointer; }

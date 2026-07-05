@@ -1,0 +1,98 @@
+.section {
+  background: #08090a;
+  color: #fffaf2;
+  padding: 90px 24px;
+}
+
+.container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.95fr 1fr;
+  gap: 70px;
+  align-items: center;
+}
+
+.imageBox {
+  position: relative;
+}
+
+.imageBox::before {
+  content: "";
+  position: absolute;
+  inset: 18px 18px -18px -18px;
+  border: 1px solid rgba(216, 167, 95, 0.35);
+  border-radius: 16px;
+}
+
+.image {
+  position: relative;
+  min-height: 420px;
+  border-radius: 16px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
+    url("/salon-interior.jpg");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.kicker {
+  color: #d8a75f;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.content h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 500;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.content p {
+  color: #cfc6bb;
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 620px;
+}
+
+.stats {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.stats div {
+  border: 1px solid rgba(216, 167, 95, 0.25);
+  border-radius: 12px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.stats strong {
+  display: block;
+  color: #d8a75f;
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.stats span {
+  color: #cfc6bb;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
