@@ -1,47 +1,18 @@
-"use client";
-
-import { useState } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import styles from "./page.module.css";
 
-export default function AdminLoginPage() {
-  const [email, setEmail] = useState("admin@haartraum.de");
-  const [password, setPassword] = useState("123456");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+type AdminLoginPageProps = {
+  searchParams?: Promise<{
+    error?: string;
+  }>;
+};
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    setError("");
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: email.trim(),
-          password: password.trim(),
-        }),
-      });
-
-      if (!response.ok) {
-        setError("E-Mail oder Passwort ist falsch.");
-        setLoading(false);
-        return;
-      }
-
-      window.location.assign("/admin/dashboard");
-    } catch {
-      setError("Login fehlgeschlagen. Bitte erneut versuchen.");
-      setLoading(false);
-    }
-  }
+export default async function AdminLoginPage({
+  searchParams,
+}: AdminLoginPageProps) {
+  const params = await searchParams;
+  const hasError = params?.error === "1";
 
   return (
     <>
@@ -57,13 +28,13 @@ export default function AdminLoginPage() {
             Melde dich an, um Termine, Buchungen und Stornierungen zu verwalten.
           </p>
 
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form action="/api/admin/login" method="POST" className={styles.form}>
             <label>
               E-Mail
               <input
                 type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                name="email"
+                defaultValue="admin@haartraum.de"
                 placeholder="admin@haartraum.de"
                 autoComplete="email"
                 required
@@ -74,19 +45,19 @@ export default function AdminLoginPage() {
               Passwort
               <input
                 type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                name="password"
+                defaultValue="123456"
                 placeholder="Passwort"
                 autoComplete="current-password"
                 required
               />
             </label>
 
-            {error && <p className={styles.error}>{error}</p>}
+            {hasError && (
+              <p className={styles.error}>E-Mail oder Passwort ist falsch.</p>
+            )}
 
-            <button type="submit" disabled={loading}>
-              {loading ? "Einloggen..." : "Einloggen"}
-            </button>
+            <button type="submit">Einloggen</button>
           </form>
         </section>
       </main>

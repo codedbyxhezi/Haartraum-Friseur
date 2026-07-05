@@ -1,29 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  const formData = await request.formData();
 
-  const email = String(body.email || "").trim();
-  const password = String(body.password || "").trim();
+  const email = String(formData.get("email") || "").trim();
+  const password = String(formData.get("password") || "").trim();
 
   const adminEmail = process.env.ADMIN_EMAIL?.trim();
   const adminPassword = process.env.ADMIN_PASSWORD?.trim();
 
   if (!adminEmail || !adminPassword) {
-    return NextResponse.json(
-      { message: "Admin Login ist nicht konfiguriert." },
-      { status: 500 }
+    return NextResponse.redirect(
+      new URL("/admin/login?error=1", request.url),
+      303
     );
   }
 
   if (email !== adminEmail || password !== adminPassword) {
-    return NextResponse.json(
-      { message: "E-Mail oder Passwort ist falsch." },
-      { status: 401 }
+    return NextResponse.redirect(
+      new URL("/admin/login?error=1", request.url),
+      303
     );
   }
 
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.redirect(
+    new URL("/admin/dashboard", request.url),
+    303
+  );
 
   response.cookies.set({
     name: "admin_session",
