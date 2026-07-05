@@ -30,13 +30,13 @@ export default async function AdminLoginPage({
 
           <form action="/api/admin/login" method="POST" className={styles.form}>
             <label>
-              E-Mail
+              Benutzername
               <input
-                type="email"
+                type="text"
                 name="email"
-                defaultValue="admin@haartraum.de"
-                placeholder="admin@haartraum.de"
-                autoComplete="email"
+                defaultValue="admin"
+                placeholder="admin"
+                autoComplete="username"
                 required
               />
             </label>
@@ -46,15 +46,15 @@ export default async function AdminLoginPage({
               <input
                 type="password"
                 name="password"
-                defaultValue="123456"
-                placeholder="Passwort"
+                defaultValue="admin"
+                placeholder="admin"
                 autoComplete="current-password"
                 required
               />
             </label>
 
             {hasError && (
-              <p className={styles.error}>E-Mail oder Passwort ist falsch.</p>
+              <p className={styles.error}>Benutzername oder Passwort ist falsch.</p>
             )}
 
             <button type="submit">Einloggen</button>

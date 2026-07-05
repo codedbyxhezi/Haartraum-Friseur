@@ -1,7 +1,438 @@
-.form { max-width: 720px; display: grid; gap: 18px; padding: 32px; background: #fffaf4; border-radius: 28px; border: 1px solid #eadfd2; }
-.form label { display: grid; gap: 8px; font-weight: 700; }
-.form input, .form select { width: 100%; padding: 14px 16px; border: 1px solid #d8c7b5; border-radius: 14px; background: white; }
-.label { display: block; margin-bottom: 8px; font-weight: 700; }
-.button { border: 0; border-radius: 999px; padding: 16px 22px; background: #1f1a17; color: white; font-weight: 800; cursor: pointer; }
-.button:disabled { opacity: .5; cursor: not-allowed; }
-.message { font-weight: 700; color: #4c7a40; }
+.section {
+  min-height: calc(100vh - 82px);
+  background:
+    radial-gradient(circle at top right, rgba(216, 167, 95, 0.16), transparent 35%),
+    linear-gradient(135deg, #050607 0%, #101113 48%, #070809 100%);
+  color: #fffaf2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 28px;
+}
+
+.card {
+  width: min(1320px, 100%);
+  min-height: 560px;
+  border: 1px solid rgba(216, 167, 95, 0.28);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(216, 167, 95, 0.1), transparent 35%),
+    rgba(255, 255, 255, 0.045);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+  padding: 22px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.kicker {
+  color: #d8a75f;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.header h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.header p {
+  color: #cfc6bb;
+  font-size: 14px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stepItem {
+  height: 46px;
+  border: 1px solid rgba(216, 167, 95, 0.22);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.035);
+  color: #bfb6aa;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.stepItem span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(216, 167, 95, 0.12);
+  color: #d8a75f;
+}
+
+.active {
+  border-color: #d8a75f;
+  color: #fffaf2;
+  background: rgba(216, 167, 95, 0.11);
+}
+
+.active span {
+  background: linear-gradient(135deg, #e9b86d, #c58a3e);
+  color: #120c05;
+}
+
+.form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepContent {
+  flex: 1;
+  animation: fadeIn 0.22s ease;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.titleRow h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.titleRow p {
+  color: #bfb6aa;
+  font-size: 14px;
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.serviceCard {
+  min-height: 92px;
+  position: relative;
+  border: 1px solid rgba(216, 167, 95, 0.22);
+  border-radius: 15px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.serviceCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(216, 167, 95, 0.55);
+}
+
+.serviceCard input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.serviceCard strong {
+  display: block;
+  color: #fffaf2;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.serviceCard span {
+  color: #bfb6aa;
+  font-size: 13px;
+}
+
+.serviceCard em {
+  color: #d8a75f;
+  font-style: normal;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.serviceCardActive {
+  border-color: #d8a75f;
+  background: rgba(216, 167, 95, 0.12);
+}
+
+.dateTimeGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  color: #fffaf2;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.field input {
+  width: 100%;
+  height: 52px;
+  border: 1px solid rgba(216, 167, 95, 0.24);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fffaf2;
+  padding: 0 16px;
+  outline: none;
+  font-size: 15px;
+}
+
+.field input:focus {
+  border-color: #d8a75f;
+}
+
+.field input::placeholder {
+  color: #8f8579;
+}
+
+.timeArea p {
+  color: #fffaf2;
+  font-weight: 900;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+}
+
+.timeButton {
+  height: 42px;
+  border: 1px solid rgba(216, 167, 95, 0.22);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fffaf2;
+  font-weight: 800;
+}
+
+.timeButton:hover {
+  border-color: #d8a75f;
+}
+
+.timeButtonActive {
+  background: linear-gradient(135deg, #e9b86d, #c58a3e);
+  color: #120c05;
+  border-color: transparent;
+}
+
+.timeButtonDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.timeButtonDisabled:hover {
+  border-color: rgba(216, 167, 95, 0.22);
+  transform: none;
+}
+
+.timeButton small,
+.timeArea small {
+  display: block;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.summary {
+  margin-top: 18px;
+  border: 1px solid rgba(216, 167, 95, 0.2);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.summary div {
+  display: grid;
+  gap: 5px;
+}
+
+.summary span {
+  color: #bfb6aa;
+  font-size: 13px;
+}
+
+.summary strong {
+  color: #fffaf2;
+  font-size: 15px;
+}
+
+.error,
+.success {
+  margin-top: 12px;
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-weight: 800;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+.error {
+  color: #ff9a9a;
+  background: rgba(156, 47, 47, 0.12);
+  border: 1px solid rgba(156, 47, 47, 0.3);
+}
+
+.success {
+  color: #93e2a9;
+  background: rgba(31, 122, 58, 0.14);
+  border: 1px solid rgba(31, 122, 58, 0.3);
+}
+
+.actions {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.backButton,
+.nextButton {
+  height: 50px;
+  border-radius: 12px;
+  padding: 0 34px;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.backButton {
+  border: 1px solid rgba(216, 167, 95, 0.38);
+  background: transparent;
+  color: #fffaf2;
+}
+
+.nextButton {
+  margin-left: auto;
+  border: none;
+  background: linear-gradient(135deg, #e9b86d, #c58a3e);
+  color: #120c05;
+  box-shadow: 0 18px 42px rgba(216, 167, 95, 0.18);
+}
+
+.nextButton:hover,
+.backButton:hover {
+  transform: translateY(-2px);
+}
+
+.nextButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1050px) {
+  .section {
+    align-items: flex-start;
+    min-height: auto;
+    padding: 60px 18px;
+  }
+
+  .card {
+    min-height: auto;
+    padding: 22px;
+  }
+
+  .serviceGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dateTimeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldsGrid,
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .timeGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .header {
+    text-align: left;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .serviceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .serviceCard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .backButton,
+  .nextButton {
+    width: 100%;
+    margin-left: 0;
+  }
+}

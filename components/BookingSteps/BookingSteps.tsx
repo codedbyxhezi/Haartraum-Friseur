@@ -3,52 +3,73 @@ import styles from "./BookingSteps.module.css";
 
 const steps = [
   {
-    number: "1",
+    number: "01",
     title: "Leistung wählen",
-    text: "Wähle deine gewünschte Leistung aus.",
+    text: "Wähle deinen gewünschten Service aus — Haarschnitt, Farbe, Balayage oder Styling.",
   },
   {
-    number: "2",
-    title: "Datum & Uhrzeit",
-    text: "Such dir einen passenden Termin aus.",
+    number: "02",
+    title: "Termin auswählen",
+    text: "Such dir ein freies Datum und eine passende Uhrzeit aus. Belegte Zeiten werden automatisch blockiert.",
   },
   {
-    number: "3",
+    number: "03",
     title: "Daten eingeben",
-    text: "Gib deine Daten ein und bestätige deine Buchung.",
+    text: "Gib deine Kontaktdaten ein und bestätige deine Buchung direkt online.",
   },
 ];
 
-export default function BookingSteps() {
+function BookingSteps() {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        <div className={styles.left}>
+        <div className={styles.content}>
           <p className={styles.kicker}>Online buchen</p>
-          <h2>Dein Termin in 3 einfachen Schritten</h2>
+
+          <h2>Dein Termin in wenigen Klicks</h2>
+
+          <p className={styles.text}>
+            Keine Anrufe, kein Warten. Buche deinen Friseurtermin einfach online
+            und erhalte später automatisch deine Bestätigung.
+          </p>
 
           <div className={styles.steps}>
             {steps.map((step) => (
-              <div key={step.number} className={styles.step}>
-                <span>{step.number}</span>
+              <article key={step.number} className={styles.step}>
+                <span className={styles.number}>{step.number}</span>
+
                 <div>
                   <h3>{step.title}</h3>
                   <p>{step.text}</p>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
 
-          <Link href="/booking" className={styles.button}>
-            <span>▣</span>
-            Jetzt Termin buchen
-          </Link>
+          <div className={styles.actions}>
+            <Link href="/booking" className={styles.primaryButton}>
+              Jetzt Termin buchen
+            </Link>
+
+            <Link href="#preise" className={styles.secondaryButton}>
+              Preise ansehen
+            </Link>
+          </div>
         </div>
 
-        <div className={styles.imageBox}>
+        <div className={styles.visual}>
           <div className={styles.image} />
+
+          <div className={styles.floatingCard}>
+            <span>Heute verfügbar</span>
+            <strong>09:00 - 17:00 Uhr</strong>
+            <p>Online-Termine werden direkt im System gespeichert.</p>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
+export { BookingSteps };
+export default BookingSteps;
