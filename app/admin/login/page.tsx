@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import styles from "./page.module.css";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
-
   const [email, setEmail] = useState("admin@haartraum.de");
   const [password, setPassword] = useState("123456");
   const [error, setError] = useState("");
@@ -16,25 +13,34 @@ export default function AdminLoginPage() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     setError("");
     setLoading(true);
 
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          email: email.trim(),
+          password: password.trim(),
+        }),
+      });
 
-    setLoading(false);
+      if (!response.ok) {
+        setError("E-Mail oder Passwort ist falsch.");
+        setLoading(false);
+        return;
+      }
 
-    if (!response.ok) {
-      setError("E-Mail oder Passwort ist falsch.");
-      return;
+      window.location.href = "/admin/dashboard";
+    } catch {
+      setError("Login fehlgeschlagen. Bitte erneut versuchen.");
+      setLoading(false);
     }
-
-    router.push("/admin/dashboard");
   }
 
   return (
@@ -59,6 +65,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="admin@haartraum.de"
+                autoComplete="email"
                 required
               />
             </label>
@@ -70,6 +77,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="Passwort"
+                autoComplete="current-password"
                 required
               />
             </label>
