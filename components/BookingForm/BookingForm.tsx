@@ -1,38 +1,77 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import styles from "./BookingForm.module.css";
 
 const services = [
   {
-    value: "Damen Haarschnitt",
-    label: "Damen Haarschnitt",
+    title: "Damen Haarschnitt",
+    duration: 60,
     price: "ab 45 €",
-    duration: "45 Min.",
+    description: "Waschen, Schneiden & Föhnen",
   },
   {
-    value: "Herren Haarschnitt",
-    label: "Herren Haarschnitt",
+    title: "Herren Haarschnitt",
+    duration: 30,
     price: "ab 30 €",
-    duration: "30 Min.",
+    description: "Waschen, Schneiden & Styling",
   },
   {
-    value: "Farbe & Schnitt",
-    label: "Farbe & Schnitt",
+    title: "Kinder Haarschnitt",
+    duration: 30,
+    price: "ab 20 €",
+    description: "Schnitt für Kinder bis 12 Jahre",
+  },
+  {
+    title: "Farbe & Schnitt",
+    duration: 120,
     price: "ab 85 €",
-    duration: "90 Min.",
+    description: "Coloration, Schnitt & Finish",
   },
   {
-    value: "Balayage",
-    label: "Balayage",
+    title: "Balayage",
+    duration: 180,
     price: "ab 120 €",
-    duration: "120 Min.",
+    description: "Balayage, Glossing & Styling",
   },
   {
-    value: "Styling",
-    label: "Styling",
+    title: "Glossing",
+    duration: 45,
+    price: "ab 35 €",
+    description: "Glanz & Farbauffrischung",
+  },
+  {
+    title: "Föhnen & Styling",
+    duration: 45,
     price: "ab 25 €",
-    duration: "30 Min.",
+    description: "Professionelles Finish",
+  },
+  {
+    title: "Event Styling",
+    duration: 60,
+    price: "ab 55 €",
+    description: "Styling für besondere Anlässe",
+  },
+  {
+    title: "Braut Styling",
+    duration: 120,
+    price: "auf Anfrage",
+    description: "Individuell nach Beratung",
+  },
+];
+
+const stylists = [
+  {
+    name: "Laura",
+    role: "Coloration & Balayage",
+  },
+  {
+    name: "Milan",
+    role: "Schnitt & Styling",
+  },
+  {
+    name: "Sofia",
+    role: "Damenservice & Events",
   },
 ];
 
@@ -56,47 +95,66 @@ const timeSlots = [
   "17:00",
 ];
 
-function getTodayDate() {
+function getTodayValue() {
   return new Date().toISOString().split("T")[0];
 }
 
-function BookingForm() {
+export function BookingForm() {
   const [step, setStep] = useState(1);
 
   const [service, setService] = useState("");
+  const [stylist, setStylist] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+  const [loadingBookedTimes, setLoadingBookedTimes] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
-  const [loadingBookedTimes, setLoadingBookedTimes] = useState(false);
-
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const selectedService = useMemo(() => {
-    return services.find((item) => item.value === service);
+    return services.find((item) => item.title === service);
   }, [service]);
+
+  const canGoStepTwo = Boolean(service && stylist);
+  const canGoStepThree = Boolean(date && time);
+  const canSubmit = Boolean(
+    name && email && phone && service && stylist && date && time
+  );
 
   useEffect(() => {
     async function loadBookedTimes() {
-      if (!date) {
+      if (!date || !service || !stylist) {
         setBookedTimes([]);
         return;
       }
 
-      setLoadingBookedTimes(true);
-
       try {
-        const response = await fetch(`/api/appointments?date=${date}`);
+        setLoadingBookedTimes(true);
+
+        const params = new URLSearchParams({
+          date,
+          service,
+          stylist,
+        });
+
+        const response = await fetch(`/api/appointments?${params.toString()}`);
         const data = await response.json();
 
-        setBookedTimes(data.bookedTimes || []);
-      } catch {
+        const blockedTimes = data.blockedTimes || data.bookedTimes || [];
+
+        setBookedTimes(blockedTimes);
+
+        if (blockedTimes.includes(time)) {
+          setTime("");
+        }
+      } catch (error) {
+        console.error(error);
         setBookedTimes([]);
       } finally {
         setLoadingBookedTimes(false);
@@ -104,329 +162,384 @@ function BookingForm() {
     }
 
     loadBookedTimes();
-  }, [date]);
+  }, [date, service, stylist, time]);
 
-  useEffect(() => {
-    if (time && bookedTimes.includes(time)) {
-      setTime("");
-    }
-  }, [bookedTimes, time]);
-
-  function goNext() {
-    setError("");
-    setSuccess("");
-
-    if (step === 1 && !service) {
-      setError("Bitte wähle zuerst eine Leistung aus.");
-      return;
-    }
-
-    if (step === 2 && (!date || !time)) {
-      setError("Bitte wähle Datum und Uhrzeit aus.");
-      return;
-    }
-
-    setStep((currentStep) => Math.min(currentStep + 1, 3));
-  }
-
-  function goBack() {
-    setError("");
-    setSuccess("");
-    setStep((currentStep) => Math.max(currentStep - 1, 1));
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setSuccess("");
-    setError("");
-
-    if (!service || !date || !time || !name || !email || !phone) {
-      setError("Bitte fülle alle Felder aus.");
+    if (!canSubmit) {
+      setMessage("Bitte fülle alle Felder aus.");
       return;
     }
 
-    setLoading(true);
-
     try {
+      setLoading(true);
+      setMessage("");
+
       const response = await fetch("/api/appointments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          service,
-          date,
-          time,
           name,
           email,
           phone,
+          service,
+          stylist,
+          date,
+          time,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Der Termin konnte nicht gebucht werden.");
-        setLoading(false);
+        setMessage(data.message || "Termin konnte nicht gebucht werden.");
         return;
       }
 
-      setSuccess("Dein Termin wurde erfolgreich gebucht.");
+      setMessage("Dein Termin wurde erfolgreich gebucht.");
 
+      setStep(1);
       setService("");
+      setStylist("");
       setDate("");
       setTime("");
       setName("");
       setEmail("");
       setPhone("");
       setBookedTimes([]);
-      setStep(1);
-    } catch {
-      setError("Es ist ein Fehler passiert. Bitte versuche es erneut.");
+    } catch (error) {
+      console.error(error);
+      setMessage("Termin konnte nicht gebucht werden.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <section className={styles.section}>
+    <main className={styles.section}>
       <div className={styles.card}>
         <div className={styles.header}>
           <p className={styles.kicker}>Online Terminbuchung</p>
-          <h1>Termin buchen</h1>
-          <p>In wenigen Schritten zu deinem Friseurtermin.</p>
+          <h1>Buche deinen Termin</h1>
+          <p>
+            Wähle deine Leistung, deinen Friseur und anschließend eine freie
+            Uhrzeit.
+          </p>
         </div>
 
-        <div className={styles.steps}>
+        <div className={styles.progress}>
           <button
             type="button"
-            className={`${styles.stepItem} ${step >= 1 ? styles.active : ""}`}
+            className={`${styles.progressItem} ${
+              step === 1 ? styles.progressItemActive : ""
+            }`}
+            onClick={() => setStep(1)}
           >
-            <span>1</span>
-            Leistung
+            <span>01</span>
+            Leistung & Friseur
           </button>
 
           <button
             type="button"
-            className={`${styles.stepItem} ${step >= 2 ? styles.active : ""}`}
+            className={`${styles.progressItem} ${
+              step === 2 ? styles.progressItemActive : ""
+            }`}
+            onClick={() => canGoStepTwo && setStep(2)}
+            disabled={!canGoStepTwo}
           >
-            <span>2</span>
-            Termin
+            <span>02</span>
+            Datum & Uhrzeit
           </button>
 
           <button
             type="button"
-            className={`${styles.stepItem} ${step >= 3 ? styles.active : ""}`}
+            className={`${styles.progressItem} ${
+              step === 3 ? styles.progressItemActive : ""
+            }`}
+            onClick={() => canGoStepThree && setStep(3)}
+            disabled={!canGoStepThree}
           >
-            <span>3</span>
-            Daten
+            <span>03</span>
+            Deine Daten
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {step === 1 && (
-            <div className={styles.stepContent}>
-              <div className={styles.titleRow}>
+            <section className={styles.formSection}>
+              <div className={styles.sectionHeader}>
                 <div>
-                  <h2>Leistung auswählen</h2>
-                  <p>Wähle aus, was du buchen möchtest.</p>
+                  <h2>Leistung & Friseur auswählen</h2>
+                  <p>
+                    Die Dauer der Leistung wird automatisch bei freien Zeiten
+                    berücksichtigt.
+                  </p>
                 </div>
+
+                {selectedService && (
+                  <div className={styles.selectedInfo}>
+                    {selectedService.duration} Min.
+                  </div>
+                )}
               </div>
 
-              <div className={styles.serviceGrid}>
-                {services.map((item) => (
-                  <label
-                    key={item.value}
-                    className={`${styles.serviceCard} ${
-                      service === item.value ? styles.serviceCardActive : ""
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="service"
-                      value={item.value}
-                      checked={service === item.value}
-                      onChange={(event) => setService(event.target.value)}
-                    />
+              <div className={styles.stepOneGrid}>
+                <div>
+                  <div className={styles.serviceGrid}>
+                    {services.map((item) => (
+                      <button
+                        key={item.title}
+                        type="button"
+                        className={`${styles.optionCard} ${
+                          service === item.title
+                            ? styles.optionCardActive
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setService(item.title);
+                          setTime("");
+                        }}
+                      >
+                        <div>
+                          <h3>{item.title}</h3>
+                          <p>{item.description}</p>
+                        </div>
 
-                    <div>
-                      <strong>{item.label}</strong>
-                      <span>{item.duration}</span>
-                    </div>
+                        <div className={styles.optionMeta}>
+                          <span>{item.duration} Min.</span>
+                          <strong>{item.price}</strong>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-                    <em>{item.price}</em>
-                  </label>
-                ))}
+                <aside className={styles.stylistPanel}>
+                  <h2 className={styles.stylistPanelTitle}>
+                    Friseur auswählen
+                  </h2>
+
+                  <p className={styles.stylistPanelText}>
+                    Wähle aus, bei wem du deinen Termin buchen möchtest.
+                  </p>
+
+                  <div className={styles.stylistGrid}>
+                    {stylists.map((item) => (
+                      <button
+                        key={item.name}
+                        type="button"
+                        className={`${styles.stylistCard} ${
+                          stylist === item.name
+                            ? styles.optionCardActive
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setStylist(item.name);
+                          setTime("");
+                        }}
+                      >
+                        <span>{item.name.charAt(0)}</span>
+
+                        <div>
+                          <h3>{item.name}</h3>
+                          <p>{item.role}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </aside>
               </div>
-            </div>
+
+              <div className={styles.actions}>
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  disabled={!canGoStepTwo}
+                  onClick={() => setStep(2)}
+                >
+                  Weiter
+                </button>
+              </div>
+            </section>
           )}
 
           {step === 2 && (
-            <div className={styles.stepContent}>
-              <div className={styles.titleRow}>
+            <section className={styles.formSection}>
+              <div className={styles.sectionHeader}>
                 <div>
                   <h2>Datum & Uhrzeit</h2>
-                  <p>Wähle deinen gewünschten Termin.</p>
+                  <p>
+                    Gebucht wird bei {stylist} für {selectedService?.duration}{" "}
+                    Minuten.
+                  </p>
+                </div>
+
+                <div className={styles.selectedInfo}>
+                  {selectedService?.title}
                 </div>
               </div>
 
               <div className={styles.dateTimeGrid}>
-                <label className={styles.field}>
-                  Datum
+                <label className={styles.dateBox}>
+                  Datum auswählen
                   <input
                     type="date"
                     value={date}
-                    min={getTodayDate()}
+                    min={getTodayValue()}
                     onChange={(event) => {
                       setDate(event.target.value);
                       setTime("");
-                      setError("");
                     }}
                     required
                   />
                 </label>
 
                 <div className={styles.timeArea}>
-                  <p>
-                    Uhrzeit{" "}
-                    {loadingBookedTimes && <small>wird geladen...</small>}
-                  </p>
+                  <div className={styles.timeTop}>
+                    <h3>Freie Uhrzeiten</h3>
+                    {loadingBookedTimes && <small>Lade Zeiten...</small>}
+                  </div>
 
                   <div className={styles.timeGrid}>
                     {timeSlots.map((slot) => {
-                      const isBooked = bookedTimes.includes(slot);
+                      const isBlocked = bookedTimes.includes(slot);
 
                       return (
                         <button
                           key={slot}
                           type="button"
-                          disabled={isBooked || !date}
+                          disabled={!date || isBlocked}
                           className={`${styles.timeButton} ${
                             time === slot ? styles.timeButtonActive : ""
-                          } ${isBooked ? styles.timeButtonDisabled : ""}`}
-                          onClick={() => {
-                            if (!isBooked) {
-                              setTime(slot);
-                              setError("");
-                            }
-                          }}
+                          } ${isBlocked ? styles.timeButtonDisabled : ""}`}
+                          onClick={() => setTime(slot)}
                         >
                           {slot}
-                          {isBooked && <small>Belegt</small>}
+                          {isBlocked && <small>Belegt</small>}
                         </button>
                       );
                     })}
                   </div>
                 </div>
               </div>
-            </div>
+
+              <div className={styles.actions}>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={() => setStep(1)}
+                >
+                  Zurück
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  disabled={!canGoStepThree}
+                  onClick={() => setStep(3)}
+                >
+                  Weiter
+                </button>
+              </div>
+            </section>
           )}
 
           {step === 3 && (
-            <div className={styles.stepContent}>
-              <div className={styles.titleRow}>
+            <section className={styles.formSection}>
+              <div className={styles.sectionHeader}>
                 <div>
                   <h2>Deine Daten</h2>
-                  <p>Zum Abschluss brauchen wir deine Kontaktdaten.</p>
+                  <p>Prüfe deinen Termin und bestätige die Buchung.</p>
                 </div>
-              </div>
-
-              <div className={styles.fieldsGrid}>
-                <label className={styles.field}>
-                  Name
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder="Max Mustermann"
-                    required
-                  />
-                </label>
-
-                <label className={styles.field}>
-                  E-Mail
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="max@email.de"
-                    required
-                  />
-                </label>
-
-                <label className={styles.field}>
-                  Telefon
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    placeholder="01234 567890"
-                    required
-                  />
-                </label>
               </div>
 
               <div className={styles.summary}>
                 <div>
                   <span>Leistung</span>
-                  <strong>{selectedService?.label}</strong>
+                  <strong>{service}</strong>
                 </div>
 
                 <div>
-                  <span>Preis</span>
-                  <strong>{selectedService?.price}</strong>
+                  <span>Friseur</span>
+                  <strong>{stylist}</strong>
+                </div>
+
+                <div>
+                  <span>Dauer</span>
+                  <strong>{selectedService?.duration} Minuten</strong>
                 </div>
 
                 <div>
                   <span>Termin</span>
                   <strong>
-                    {date}, {time} Uhr
+                    {date} um {time} Uhr
                   </strong>
                 </div>
               </div>
-            </div>
+
+              <div className={styles.fieldsGrid}>
+                <label>
+                  Name
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="Dein Name"
+                    required
+                  />
+                </label>
+
+                <label>
+                  E-Mail
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="deine@email.de"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Telefon
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder="+49 ..."
+                    required
+                  />
+                </label>
+              </div>
+
+              {message && <p className={styles.message}>{message}</p>}
+
+              <div className={styles.actions}>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={() => setStep(2)}
+                >
+                  Zurück
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.primaryButton}
+                  disabled={!canSubmit || loading}
+                >
+                  {loading ? "Wird gebucht..." : "Termin buchen"}
+                </button>
+              </div>
+            </section>
           )}
-
-          {error && <p className={styles.error}>{error}</p>}
-          {success && <p className={styles.success}>{success}</p>}
-
-          <div className={styles.actions}>
-            {step > 1 && (
-              <button
-                type="button"
-                className={styles.backButton}
-                onClick={goBack}
-              >
-                Zurück
-              </button>
-            )}
-
-            {step < 3 && (
-              <button
-                type="button"
-                className={styles.nextButton}
-                onClick={goNext}
-              >
-                Weiter
-              </button>
-            )}
-
-            {step === 3 && (
-              <button
-                type="submit"
-                disabled={loading}
-                className={styles.nextButton}
-              >
-                {loading ? "Wird gebucht..." : "Termin buchen"}
-              </button>
-            )}
-          </div>
         </form>
       </div>
-    </section>
+    </main>
   );
 }
 
-export { BookingForm };
 export default BookingForm;

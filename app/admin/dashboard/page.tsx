@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -24,9 +24,11 @@ function formatTime(date: Date) {
 }
 
 function getStatusLabel(status: string) {
-  if (status === "BOOKED") return "Gebucht";
-  if (status === "CANCELLED") return "Storniert";
-  return status;
+  if (status === "CANCELLED") {
+    return "Storniert";
+  }
+
+  return "Gebucht";
 }
 
 export default async function AdminDashboardPage() {
@@ -44,16 +46,11 @@ export default async function AdminDashboardPage() {
   });
 
   const today = new Date();
+  const todayString = today.toDateString();
 
-  const todayAppointments = appointments.filter((appointment) => {
-    const date = new Date(appointment.startsAt);
-
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  });
+  const todayAppointments = appointments.filter(
+    (appointment) => appointment.startsAt.toDateString() === todayString
+  );
 
   const bookedAppointments = appointments.filter(
     (appointment) => appointment.status === "BOOKED"
@@ -68,115 +65,177 @@ export default async function AdminDashboardPage() {
       <Header />
 
       <main className={styles.main}>
-        <div className={styles.top}>
+        <section className={styles.hero}>
           <div>
             <p className={styles.kicker}>Admin Dashboard</p>
-            <h1>Termine verwalten</h1>
-            <p className={styles.subtitle}>
-              Hier siehst du alle gebuchten und stornierten Termine aus deiner
-              MySQL-Datenbank.
+            <h1>Terminverwaltung</h1>
+            <p>
+              Hier verwaltest du alle Buchungen, Friseure, Zeiten und
+              Stornierungen.
             </p>
           </div>
 
           <form action="/api/admin/logout" method="post">
-            <button className={styles.logoutButton}>Ausloggen</button>
+            <button className={styles.logoutButton} type="submit">
+              Logout
+            </button>
           </form>
-        </div>
+        </section>
 
         <section className={styles.statsGrid}>
           <article className={styles.statCard}>
+            <span>Alle Termine</span>
+            <strong>{appointments.length}</strong>
+          </article>
+
+          <article className={styles.statCard}>
             <span>Heute</span>
             <strong>{todayAppointments.length}</strong>
-            <p>Termine heute</p>
           </article>
 
           <article className={styles.statCard}>
             <span>Gebucht</span>
             <strong>{bookedAppointments.length}</strong>
-            <p>aktive Termine</p>
           </article>
 
           <article className={styles.statCard}>
             <span>Storniert</span>
             <strong>{cancelledAppointments.length}</strong>
-            <p>abgesagte Termine</p>
           </article>
         </section>
 
-        <section className={styles.appointments}>
-          <div className={styles.sectionHeader}>
+        <section className={styles.panel}>
+          <div className={styles.panelHeader}>
             <div>
-              <p className={styles.kicker}>Alle Termine</p>
-              <h2>Terminübersicht</h2>
+              <p className={styles.kicker}>Buchungen</p>
+              <h2>Alle Termine</h2>
             </div>
 
-            <span>{appointments.length} Termine insgesamt</span>
+            <span>{appointments.length} Einträge</span>
           </div>
 
           {appointments.length === 0 ? (
             <div className={styles.empty}>
               <h3>Noch keine Termine</h3>
-              <p>
-                Sobald ein Kunde einen Termin bucht, erscheint er hier im
-                Dashboard.
-              </p>
+              <p>Sobald Kunden buchen, erscheinen die Termine hier.</p>
             </div>
           ) : (
-            <div className={styles.table}>
-              <div className={styles.tableHead}>
-                <span>Datum</span>
-                <span>Uhrzeit</span>
-                <span>Kunde</span>
-                <span>Service</span>
-                <span>Kontakt</span>
-                <span>Status</span>
-                <span>Aktion</span>
-              </div>
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Datum</th>
+                    <th>Zeit</th>
+                    <th>Kunde</th>
+                    <th>Service</th>
+                    <th>Friseur</th>
+                    <th>Dauer</th>
+                    <th>Kontakt</th>
+                    <th>Status</th>
+                    <th>Aktion</th>
+                  </tr>
+                </thead>
 
-              {appointments.map((appointment) => (
-                <div key={appointment.id} className={styles.row}>
-                  <span>{formatDate(appointment.startsAt)}</span>
-                  <strong>{formatTime(appointment.startsAt)}</strong>
+                <tbody>
+                  {appointments.map((appointment) => (
+                    <tr key={appointment.id}>
+                      <td>
+                        <strong>{formatDate(appointment.startsAt)}</strong>
+                      </td>
 
-                  <div>
-                    <b>{appointment.name}</b>
-                    <small>{appointment.email}</small>
-                  </div>
+                      <td>
+                        <div className={styles.timeBox}>
+                          <strong>
+                            {formatTime(appointment.startsAt)} -{" "}
+                            {formatTime(appointment.endsAt)}
+                          </strong>
+                          <span>Uhr</span>
+                        </div>
+                      </td>
 
-                  <span>{appointment.service}</span>
+                      <td>
+                        <div className={styles.customer}>
+                          <strong>{appointment.name}</strong>
+                          <span>{appointment.phone}</span>
+                        </div>
+                      </td>
 
-                  <span>{appointment.phone}</span>
+                      <td>{appointment.service}</td>
 
-                  <em
-                    className={
-                      appointment.status === "CANCELLED"
-                        ? styles.cancelled
-                        : styles.booked
-                    }
-                  >
-                    {getStatusLabel(appointment.status)}
-                  </em>
+                      <td>
+                        <span className={styles.stylist}>
+                          {appointment.stylist}
+                        </span>
+                      </td>
 
-                  <div className={styles.actions}>
-                    {appointment.status !== "CANCELLED" && (
-                      <form
-                        action="/api/admin/appointments/cancel"
-                        method="post"
-                      >
-                        <input type="hidden" name="id" value={appointment.id} />
-                        <button className={styles.cancelButton}>
-                          Stornieren
-                        </button>
-                      </form>
-                    )}
+                      <td>{appointment.durationMinutes} Min.</td>
 
-                    <form action="/api/admin/appointments/delete" method="post">
-                      <input type="hidden" name="id" value={appointment.id} />
-                      <button className={styles.deleteButton}>Löschen</button>
-                    </form>
-                  </div>
-                </div>
-              ))}
+                      <td>
+                        <a
+                          className={styles.email}
+                          href={`mailto:${appointment.email}`}
+                        >
+                          {appointment.email}
+                        </a>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`${styles.status} ${
+                            appointment.status === "CANCELLED"
+                              ? styles.statusCancelled
+                              : styles.statusBooked
+                          }`}
+                        >
+                          {getStatusLabel(appointment.status)}
+                        </span>
+                      </td>
+
+                      <td>
+                        <div className={styles.actions}>
+                          {appointment.status !== "CANCELLED" && (
+                            <form
+                              action="/api/admin/appointments/cancel"
+                              method="post"
+                            >
+                              <input
+                                type="hidden"
+                                name="id"
+                                value={appointment.id}
+                              />
+
+                              <button
+                                type="submit"
+                                className={styles.cancelButton}
+                              >
+                                Stornieren
+                              </button>
+                            </form>
+                          )}
+
+                          <form
+                            action="/api/admin/appointments/delete"
+                            method="post"
+                          >
+                            <input
+                              type="hidden"
+                              name="id"
+                              value={appointment.id}
+                            />
+
+                            <button
+                              type="submit"
+                              className={styles.deleteButton}
+                            >
+                              Löschen
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </section>

@@ -8,16 +8,19 @@ datasource db {
 }
 
 model Appointment {
-  id          String            @id @default(cuid())
-  name        String
-  email       String
-  phone       String
-  service     String
-  startsAt    DateTime
-  status      AppointmentStatus @default(BOOKED)
-  cancelToken String            @unique
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id              String            @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  service         String
+  stylist         String            @default("Beliebig")
+  durationMinutes Int               @default(30)
+  startsAt        DateTime
+  endsAt          DateTime          @default(now())
+  status          AppointmentStatus @default(BOOKED)
+  cancelToken     String            @unique
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 }
 
 enum AppointmentStatus {
