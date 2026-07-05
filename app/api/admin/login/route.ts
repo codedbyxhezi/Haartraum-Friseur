@@ -1,11 +1,13 @@
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const { email, password } = await request.json();
+export async function POST(request: NextRequest) {
+  const body = await request.json();
 
-  const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const email = String(body.email || "").trim();
+  const password = String(body.password || "").trim();
+
+  const adminEmail = process.env.ADMIN_EMAIL?.trim();
+  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
 
   if (!adminEmail || !adminPassword) {
     return NextResponse.json(
@@ -16,14 +18,16 @@ export async function POST(request: Request) {
 
   if (email !== adminEmail || password !== adminPassword) {
     return NextResponse.json(
-      { message: "Falsche Login-Daten." },
+      { message: "E-Mail oder Passwort ist falsch." },
       { status: 401 }
     );
   }
 
-  const cookieStore = await cookies();
+  const response = NextResponse.json({ success: true });
 
-  cookieStore.set("admin_session", "logged_in", {
+  response.cookies.set({
+    name: "admin_session",
+    value: "logged_in",
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -31,5 +35,5 @@ export async function POST(request: Request) {
     maxAge: 60 * 60 * 24,
   });
 
-  return NextResponse.json({ success: true });
+  return response;
 }

@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "same-origin",
+        credentials: "include",
         body: JSON.stringify({
           email: email.trim(),
           password: password.trim(),
@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      window.location.href = "/admin/dashboard";
+      window.location.assign("/admin/dashboard");
     } catch {
       setError("Login fehlgeschlagen. Bitte erneut versuchen.");
       setLoading(false);
