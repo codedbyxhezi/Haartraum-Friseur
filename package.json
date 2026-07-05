@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "latest",
-    "@prisma/client": "latest",
+    "@prisma/client": "^6.17.1",
     "bcryptjs": "latest",
     "next": "latest",
     "next-auth": "latest",
+    "prisma": "^6.17.1",
     "react": "latest",
     "react-dom": "latest",
     "resend": "latest",
@@ -28,7 +29,6 @@
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
-    "prisma": "latest",
     "typescript": "latest"
   }
 }
