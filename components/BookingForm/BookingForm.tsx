@@ -99,43 +99,6 @@ function getTodayValue() {
   return new Date().toISOString().split("T")[0];
 }
 
-function getCookie(name: string) {
-  if (typeof document === "undefined") {
-    return "";
-  }
-
-  const cookies = document.cookie.split("; ");
-  const cookie = cookies.find((item) => item.startsWith(`${name}=`));
-
-  return cookie?.split("=")[1] || "";
-}
-
-function showBookingNotification(
-  service: string,
-  stylist: string,
-  date: string,
-  time: string
-) {
-  const consent = getCookie("haartraum_cookie_consent");
-
-  if (consent !== "accepted") {
-    return;
-  }
-
-  if (!("Notification" in window)) {
-    return;
-  }
-
-  if (Notification.permission !== "granted") {
-    return;
-  }
-
-  new Notification("Termin erfolgreich gebucht", {
-    body: `${service} bei ${stylist} am ${date} um ${time} Uhr.`,
-    icon: "/android-chrome-192x192.png",
-  });
-}
-
 export function BookingForm() {
   const [step, setStep] = useState(1);
 
@@ -237,8 +200,6 @@ export function BookingForm() {
       }
 
       setMessage("Dein Termin wurde erfolgreich gebucht.");
-
-      showBookingNotification(service, stylist, date, time);
 
       setStep(1);
       setService("");
