@@ -2,100 +2,85 @@ import Link from "next/link";
 import styles from "./Footer.module.css";
 
 function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer id="kontakt" className={styles.footer}>
+    <footer className={styles.footer} id="kontakt">
       <div className={styles.container}>
-        <div className={styles.brand}>
-          <Link href="/" className={styles.logo}>
-            <span className={styles.logoIcon}>✂</span>
-            <span>
-              <strong>HAARTRAUM</strong>
-              <small>FRISEUR</small>
-            </span>
-          </Link>
+        <div className={styles.top}>
+          <div className={styles.brand}>
+            <Link href="/" className={styles.logo}>
+              HAARTRAUM
+              <span>Friseur</span>
+            </Link>
 
-          <p>
-            Moderne Haarschnitte, Farbe und Styling in entspannter Atmosphäre.
-            Buche deinen Termin einfach online.
-          </p>
-
-          <Link href="/booking" className={styles.bookingButton}>
-            Termin buchen
-          </Link>
-        </div>
-
-        <div className={styles.column}>
-          <h3>Navigation</h3>
-          <Link href="/">Home</Link>
-          <Link href="#leistungen">Leistungen</Link>
-          <Link href="#preise">Preise</Link>
-          <Link href="#ueber-uns">Über uns</Link>
-          <Link href="#kontakt">Kontakt</Link>
-        </div>
-
-        <div className={styles.column}>
-          <h3>Leistungen</h3>
-          <Link href="/booking">Damen Haarschnitt</Link>
-          <Link href="/booking">Herren Haarschnitt</Link>
-          <Link href="/booking">Farbe & Strähnen</Link>
-          <Link href="/booking">Balayage</Link>
-          <Link href="/booking">Styling</Link>
-        </div>
-
-        <div className={styles.column}>
-          <h3>Kontakt</h3>
-
-          <div className={styles.infoItem}>
-            <span>⌖</span>
             <p>
-              Hauptstraße 123
-              <br />
-              12345 Musterstadt
+              Dein moderner Friseursalon für Schnitt, Farbe, Styling und
+              persönliche Beratung in eleganter Atmosphäre.
             </p>
+
+            <Link href="/booking" className={styles.bookingButton}>
+              Termin buchen
+            </Link>
           </div>
 
-          <div className={styles.infoItem}>
-            <span>☎</span>
-            <p>01234 567890</p>
+          <div className={styles.column}>
+            <h3>Navigation</h3>
+
+            <nav>
+              <Link href="/">Home</Link>
+              <Link href="/#leistungen">Leistungen</Link>
+              <Link href="/#preise">Preise</Link>
+              <Link href="/#galerie">Galerie</Link>
+              <Link href="/blog">Blog</Link>
+            </nav>
           </div>
 
-          <div className={styles.infoItem}>
-            <span>✉</span>
-            <p>info@haartraum.de</p>
+          <div className={styles.column}>
+            <h3>Leistungen</h3>
+
+            <nav>
+              <Link href="/booking">Damen Haarschnitt</Link>
+              <Link href="/booking">Herren Haarschnitt</Link>
+              <Link href="/booking">Farbe & Schnitt</Link>
+              <Link href="/booking">Balayage</Link>
+              <Link href="/booking">Styling</Link>
+            </nav>
+          </div>
+
+          <div className={styles.column}>
+            <h3>Kontakt</h3>
+
+            <div className={styles.contactList}>
+              <p>
+                Musterstraße 12
+                <br />
+                12345 Musterstadt
+              </p>
+
+              <p>
+                Tel: +49 123 456789
+                <br />
+                Mail: info@haartraum-friseur.de
+              </p>
+
+              <p>
+                Mo - Sa: 09:00 - 18:00 Uhr
+                <br />
+                Sonntag geschlossen
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className={styles.column}>
-          <h3>Öffnungszeiten</h3>
+        <div className={styles.bottom}>
+          <p>© {year} Haartraum Friseur. Alle Rechte vorbehalten.</p>
 
-          <div className={styles.hours}>
-            <div>
-              <span>Mo</span>
-              <p>Geschlossen</p>
-            </div>
-            <div>
-              <span>Di - Fr</span>
-              <p>09:00 - 18:00</p>
-            </div>
-            <div>
-              <span>Sa</span>
-              <p>09:00 - 14:00</p>
-            </div>
-            <div>
-              <span>So</span>
-              <p>Geschlossen</p>
-            </div>
+          <div className={styles.legalLinks}>
+            <Link href="/impressum">Impressum</Link>
+            <Link href="/datenschutz">Datenschutz</Link>
+            <Link href="/admin/login">Login</Link>
           </div>
-        </div>
-      </div>
-
-      <div className={styles.bottom}>
-        <p>© 2026 Haartraum Friseur. Alle Rechte vorbehalten.</p>
-
-        <div>
-          <Link href="/impressum">Impressum</Link>
-          <Link href="/datenschutz">Datenschutz</Link>
-          <Link href="/admin/login">Admin Login</Link>
         </div>
       </div>
     </footer>
