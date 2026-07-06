@@ -7,9 +7,7 @@ export async function POST(request: NextRequest) {
   const token = String(formData.get("token") || "");
 
   if (!token) {
-    return NextResponse.redirect(
-      new URL("/cancel/error?message=missing-token", request.url)
-    );
+    return NextResponse.redirect(new URL("/", request.url), 303);
   }
 
   const appointment = await prisma.appointment.findUnique({
@@ -19,14 +17,13 @@ export async function POST(request: NextRequest) {
   });
 
   if (!appointment) {
-    return NextResponse.redirect(
-      new URL(`/cancel/${token}?error=not-found`, request.url)
-    );
+    return NextResponse.redirect(new URL(`/cancel/${token}`, request.url), 303);
   }
 
   if (appointment.status === "CANCELLED") {
     return NextResponse.redirect(
-      new URL(`/cancel/${token}?error=already-cancelled`, request.url)
+      new URL(`/cancel/${token}?error=already-cancelled`, request.url),
+      303
     );
   }
 
@@ -43,8 +40,6 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.redirect(
     new URL(`/cancel/${token}?success=1`, request.url),
-    {
-      status: 303,
-    }
+    303
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import styles from "./BookingForm.module.css";
 
@@ -95,6 +96,14 @@ const timeSlots = [
   "17:00",
 ];
 
+type BookingSuccess = {
+  service: string;
+  stylist: string;
+  date: string;
+  time: string;
+  cancelUrl: string;
+};
+
 function getTodayValue() {
   return new Date().toISOString().split("T")[0];
 }
@@ -116,6 +125,9 @@ export function BookingForm() {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [bookingSuccess, setBookingSuccess] = useState<BookingSuccess | null>(
+    null
+  );
 
   const selectedService = useMemo(() => {
     return services.find((item) => item.title === service);
@@ -164,6 +176,33 @@ export function BookingForm() {
     loadBookedTimes();
   }, [date, service, stylist, time]);
 
+  async function copyCancelLink() {
+    if (!bookingSuccess?.cancelUrl) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(bookingSuccess.cancelUrl);
+      setMessage("Stornierungslink wurde kopiert.");
+    } catch {
+      setMessage("Link konnte nicht automatisch kopiert werden.");
+    }
+  }
+
+  function resetForm() {
+    setStep(1);
+    setService("");
+    setStylist("");
+    setDate("");
+    setTime("");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setBookedTimes([]);
+    setMessage("");
+    setBookingSuccess(null);
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -199,23 +238,102 @@ export function BookingForm() {
         return;
       }
 
-      setMessage("Dein Termin wurde erfolgreich gebucht.");
+      const cancelToken = data.appointment?.cancelToken;
 
-      setStep(1);
-      setService("");
-      setStylist("");
-      setDate("");
-      setTime("");
-      setName("");
-      setEmail("");
-      setPhone("");
-      setBookedTimes([]);
+      if (!cancelToken) {
+        setMessage(
+          "Termin wurde gebucht, aber der Stornierungslink konnte nicht erstellt werden."
+        );
+        return;
+      }
+
+      const cancelUrl = `${window.location.origin}/cancel/${cancelToken}`;
+
+      setBookingSuccess({
+        service,
+        stylist,
+        date,
+        time,
+        cancelUrl,
+      });
+
+      setMessage("Dein Termin wurde erfolgreich gebucht.");
     } catch (error) {
       console.error(error);
       setMessage("Termin konnte nicht gebucht werden.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (bookingSuccess) {
+    return (
+      <main className={styles.section}>
+        <div className={styles.card}>
+          <section className={styles.successCard}>
+            <p className={styles.kicker}>Buchung erfolgreich</p>
+
+            <h1>Dein Termin wurde gebucht</h1>
+
+            <p className={styles.successText}>
+              Bitte speichere dir deinen Stornierungslink. Später senden wir
+              diesen Link automatisch per E-Mail.
+            </p>
+
+            <div className={styles.summary}>
+              <div>
+                <span>Leistung</span>
+                <strong>{bookingSuccess.service}</strong>
+              </div>
+
+              <div>
+                <span>Friseur</span>
+                <strong>{bookingSuccess.stylist}</strong>
+              </div>
+
+              <div>
+                <span>Datum</span>
+                <strong>{bookingSuccess.date}</strong>
+              </div>
+
+              <div>
+                <span>Uhrzeit</span>
+                <strong>{bookingSuccess.time} Uhr</strong>
+              </div>
+            </div>
+
+            <div className={styles.cancelLinkBox}>
+              <span>Stornierungslink</span>
+              <p>{bookingSuccess.cancelUrl}</p>
+            </div>
+
+            {message && <p className={styles.message}>{message}</p>}
+
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={copyCancelLink}
+              >
+                Link kopieren
+              </button>
+
+              <Link href={bookingSuccess.cancelUrl} className={styles.dangerLink}>
+                Termin stornieren
+              </Link>
+
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={resetForm}
+              >
+                Neuen Termin buchen
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    );
   }
 
   return (
