@@ -99,6 +99,43 @@ function getTodayValue() {
   return new Date().toISOString().split("T")[0];
 }
 
+function getCookie(name: string) {
+  if (typeof document === "undefined") {
+    return "";
+  }
+
+  const cookies = document.cookie.split("; ");
+  const cookie = cookies.find((item) => item.startsWith(`${name}=`));
+
+  return cookie?.split("=")[1] || "";
+}
+
+function showBookingNotification(
+  service: string,
+  stylist: string,
+  date: string,
+  time: string
+) {
+  const consent = getCookie("haartraum_cookie_consent");
+
+  if (consent !== "accepted") {
+    return;
+  }
+
+  if (!("Notification" in window)) {
+    return;
+  }
+
+  if (Notification.permission !== "granted") {
+    return;
+  }
+
+  new Notification("Termin erfolgreich gebucht", {
+    body: `${service} bei ${stylist} am ${date} um ${time} Uhr.`,
+    icon: "/android-chrome-192x192.png",
+  });
+}
+
 export function BookingForm() {
   const [step, setStep] = useState(1);
 
@@ -201,6 +238,8 @@ export function BookingForm() {
 
       setMessage("Dein Termin wurde erfolgreich gebucht.");
 
+      showBookingNotification(service, stylist, date, time);
+
       setStep(1);
       setService("");
       setStylist("");
@@ -301,6 +340,7 @@ export function BookingForm() {
                         onClick={() => {
                           setService(item.title);
                           setTime("");
+                          setMessage("");
                         }}
                       >
                         <div>
@@ -339,6 +379,7 @@ export function BookingForm() {
                         onClick={() => {
                           setStylist(item.name);
                           setTime("");
+                          setMessage("");
                         }}
                       >
                         <span>{item.name.charAt(0)}</span>
@@ -392,6 +433,7 @@ export function BookingForm() {
                     onChange={(event) => {
                       setDate(event.target.value);
                       setTime("");
+                      setMessage("");
                     }}
                     required
                   />
@@ -415,7 +457,10 @@ export function BookingForm() {
                           className={`${styles.timeButton} ${
                             time === slot ? styles.timeButtonActive : ""
                           } ${isBlocked ? styles.timeButtonDisabled : ""}`}
-                          onClick={() => setTime(slot)}
+                          onClick={() => {
+                            setTime(slot);
+                            setMessage("");
+                          }}
                         >
                           {slot}
                           {isBlocked && <small>Belegt</small>}
@@ -486,7 +531,10 @@ export function BookingForm() {
                   <input
                     type="text"
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={(event) => {
+                      setName(event.target.value);
+                      setMessage("");
+                    }}
                     placeholder="Dein Name"
                     required
                   />
@@ -497,7 +545,10 @@ export function BookingForm() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      setMessage("");
+                    }}
                     placeholder="deine@email.de"
                     required
                   />
@@ -508,7 +559,10 @@ export function BookingForm() {
                   <input
                     type="tel"
                     value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
+                    onChange={(event) => {
+                      setPhone(event.target.value);
+                      setMessage("");
+                    }}
                     placeholder="+49 ..."
                     required
                   />
